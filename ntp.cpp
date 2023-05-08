@@ -6,7 +6,7 @@ void Date::setDate(){
     char *strDate = (char*)this->timeClient->getFormattedDate().c_str();
     int buffer;
     if(DEBUG_NTP) Serial.println("NTP: "+this->timeClient->getFormattedDate());
-    sscanf(strDate, "%d-%d-%dT%d:%d:%dZ", &buffer, &this->month, (int*)&this->day, (int*)&this->hour, (int*)&this->minute, &buffer);
+    sscanf(strDate, "%d-%d-%dT%d:%d:%dZ", &buffer, &this->month, &this->day, &this->hour, &this->minute, &buffer);
 }
 
 void Date::setTimeFuse(int32_t timeFuse){
