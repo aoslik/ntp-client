@@ -8,14 +8,15 @@
 
 class Date{
     private:
-    uint8_t day;
-    uint8_t month;
-    uint8_t hour;
-    uint8_t minute;
+    bool setup {false};
+    int day;
+    int month;
+    int hour;
+    int minute;
     int32_t timeFuse {-10800}; // intial timezone default Sao Paulo (GMT-3)
 
-    WiFiUDP* ntpUDP;
-    NTPClient* timeClient;
+    WiFiUDP* ntpUDP = new WiFiUDP();
+    NTPClient* timeClient = new NTPClient((*ntpUDP));
 
     /// @brief Set all private property of time with ntp client
     void setDate();
@@ -39,21 +40,24 @@ class Date{
     /// @return timeFuse
     int32_t getTimeFuse() const;
 
+    /// @return current epoch on ntp client 
+    uint32_t getEpoch() const;
+
     /// @brief Pivate property
     /// @return day 
-    uint8_t getDay() const;
+    int getDay() const;
 
     /// @brief Pivate property
     /// @return month
-    uint8_t getMonth() const;
+    int getMonth() const;
 
     /// @brief Pivate property
     /// @return hour
-    uint8_t getHour() const;
+    int getHour() const;
 
     /// @brief Private property
     /// @return minute
-    uint8_t getMinute() const;
+    int getMinute() const;
 };
 
 extern Date date;

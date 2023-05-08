@@ -5,7 +5,8 @@ Date date;
 void Date::setDate(){
     char *strDate = (char*)this->timeClient->getFormattedDate().c_str();
     int buffer;
-    sscanf(strDate, "%d-%d-%dT%d:%d:%dZ", &buffer, &this->month, &this->day, &this->hour, &this->minute, &buffer);
+    if(DEBUG_NTP) Serial.println("NTP: "+this->timeClient->getFormattedDate());
+    sscanf(strDate, "%d-%d-%dT%d:%d:%dZ", &buffer, &this->month, (int*)&this->day, (int*)&this->hour, (int*)&this->minute, &buffer);
 }
 
 void Date::setTimeFuse(int32_t timeFuse){
@@ -15,10 +16,14 @@ void Date::setTimeFuse(int32_t timeFuse){
 
 bool Date::begin(){
     bool result = false;
-    this->ntpUDP = new WiFiUDP;
-    this->timeClient = new NTPClient((*this->ntpUDP), this->timeFuse);
-    this->timeClient->begin();
-    if(DEBUG_NTP) Serial.println("Setup NTP server...");
+    if(setup){
+        this->timeClient->end();
+        this->timeClient->begin();
+    }else{
+        this->timeClient->begin();
+    }
+    this->setup = true;
+    if(DEBUG_NTP) Serial.println("NTP: Setup NTP server...");
     for(int attempt = 0; attempt < 6; attempt++){
         if(this->timeClient->update()){
             this->update();
@@ -33,7 +38,7 @@ bool Date::begin(){
             delay(500);
         }
     }
-    if(DEBUG_NTP) Serial.println(result ? "Setup NTP server success" : "Setup NTP server failure");
+    if(DEBUG_NTP) Serial.println(result ? "NTP: Setup NTP server success" : "NTP: Setup NTP server failure");
     return result;
 }
 
@@ -51,18 +56,22 @@ int32_t Date::getTimeFuse() const{
     return this->timeFuse;
 }
 
-uint8_t Date::getDay() const{
+uint32_t Date::getEpoch() const{
+    return this->timeClient->getEpochTime();
+}
+
+int Date::getDay() const{
     return this->day;
 }
 
-uint8_t Date::getMonth() const{
+int Date::getMonth() const{
     return this->month;
 }
 
-uint8_t Date::getHour() const{
+int Date::getHour() const{
     return this->hour;
 }   
 
-uint8_t Date::getMinute() const{
+int Date::getMinute() const{
     return this->minute;
 }
