@@ -13,7 +13,7 @@ class Date{
     int month;
     int hour;
     int minute;
-    int32_t timeFuse {-10800}; // intial timezone default Sao Paulo (GMT-3)
+    int32_t timeFuse {-0}; // intial timezone default (GMT-0)
 
     WiFiUDP* ntpUDP = new WiFiUDP();
     NTPClient* timeClient = new NTPClient((*ntpUDP));

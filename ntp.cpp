@@ -44,7 +44,7 @@ bool Date::begin(){
 
 void Date::update(ulong lastEpoch, bool updateNTP){
     if(lastEpoch){
-        this->timeClient->setEpochTime(lastEpoch - this->timeFuse);
+        this->timeClient->setEpochTime(lastEpoch);
     }
     if(updateNTP && WiFi.isConnected()){
         this->timeClient->update();
